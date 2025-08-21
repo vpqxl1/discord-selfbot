@@ -3,7 +3,7 @@ const axios = require('axios');
 
 module.exports = {
     name: 'exchange',
-    description: '💱 Converts an amount from one currency to another.',
+    description: 'Converts an amount from one currency to another.',
     /**
      * Executes the exchange command.
      * 
