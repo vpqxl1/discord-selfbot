@@ -3,7 +3,7 @@ const axios = require('axios');
 
 module.exports = {
   name: 'weather',
-  description: '🌤️ Provides current weather information for a specified location.',
+  description: 'Provides current weather information for a specified location.',
   /**
    * Executes the weather command.
    * 
