@@ -8,33 +8,41 @@
 This Node.js-based Discord selfbot offers a comprehensive suite of automation, analytics, and utility commands:
 
 ```
-🔸 !addy → Sends your wallet address in a styled message with emojis.
+🔸 !addy → Sends your Litecoin (LTC) wallet address in a styled message with emojis.
 🔸 !analyze → Comprehensive analysis tool for DMs and servers with detailed statistics (use -h for help).
+🔸 !autoreact → Automatically react to messages from specific users or with keywords
 🔸 !avatar → Displays the avatar of the mentioned user.
 🔸 !backup-channels → Export the guild channels (name, type, topic, position, parent) and roles & permissions to a JSON file.
 🔸 !bal → Checks the balance of a Litecoin (LTC) wallet address and its equivalent in USD and INR.
 🔸 !ban → Bans a user from the server.
-🔸 !clear → Delete messages off a channel.
+🔸 !botstats → Monitor and analyze bot performance metrics
+🔸 !clear → Delete messages off a channel
 🔸 !coinflip → Flips a coin.
 🔸 !crypto → Fetches detailed info about any cryptocurrency.
-🔸 !dmuserinfo → Shows DM info with detailed statistics and analytics of each user.
-🔸 !dmuserinfo2 → Analyze DM history between users with detailed statistics.
+🔸 !dictionary → Look up definitions using free dictionary APIs
+🔸 !encode → Encode/decode text using various methods
 🔸 !exchange → Converts an amount from one currency to another.
+🔸 !funfact → Displays a random fun fact from an API.
 🔸 !gayrate → Rates how gay a user is.
 🔸 !gitsearch → Searches GitHub for repositories.
 🔸 !gituser → Retrieves information about a GitHub user.
 🔸 !guildicon → Displays the guild icon.
 🔸 !help → Shows a list of available commands.
-🔸 !sysinfo → Neofetch-style system info with pixel-art logos, bars and extended GPU/CPU details.
+🔸 !hwinfo → Neofetch-style system info with pixel-art logos, bars and extended GPU/CPU details.
 🔸 !iplookup → Lookup information about an IP address.
 🔸 !kick → Kicks a user from the server.
+🔸 !log → Log messages from a channel to a file
 🔸 !loverate → Rates the compatibility of two mentioned users as lovers.
 🔸 !math → Evaluates a mathematical expression.
-🔸 !setnickname → Changes your own nickname.
 🔸 !ping → Checks the bot's latency.
 🔸 !qrcode → Generates a QR code for a given link.
+🔸 !quote → Get inspirational quotes by category (philosophy, fiction, authors, etc.)
+🔸 !randnum → undefined
 🔸 !restore-channels → Restore roles, channels and channel permission overwrites from a JSON backup created by backup-channels.
+🔸 !roles → Analyze role distribution and permission usage
+🔸 !security → Comprehensive server security assessment
 🔸 !serverinfo → Shows server info or DM info with detailed statistics and analytics.
+🔸 !setnickname → Changes your own nickname.
 🔸 !slotmachine → Play a simple slot machine.
 🔸 !spam → Spams a message multiple times.
 🔸 !status → Sets the bot's status.
@@ -56,11 +64,10 @@ This Node.js-based Discord selfbot offers a comprehensive suite of automation, a
 
 2. **Install dependencies**
     ```bash
-    npm i
-    ```
+    npm i```
 
 3. **Configure your config**
-    - Edit your config.js file and add your Discord token and userID
+    - Edit the config.js file and add your Discord token, userID and prefix
 
     - **Never share your token with anyone!**
 
