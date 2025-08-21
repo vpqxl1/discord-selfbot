@@ -50,20 +50,18 @@ This Node.js-based Discord selfbot offers a comprehensive suite of automation, a
 
 1. **Clone the repository**
     ```bash
-    git clone https://github.com/yourusername/your-selfbot-repo.git
+    git clone https://github.com/vpqxl1/discord-selfbot.git
     cd your-selfbot-repo
     ```
 
 2. **Install dependencies**
     ```bash
-    npm install
+    npm i
     ```
 
-3. **Configure your Discord token**
-    - Create a `.env` file or edit the `config.json` file and add your Discord token:
-      ```
-      DISCORD_TOKEN=your_token_here
-      ```
+3. **Configure your config**
+    - Edit your config.js file and add your Discord token and userID
+
     - **Never share your token with anyone!**
 
 ## Usage
