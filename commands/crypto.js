@@ -2,7 +2,7 @@ const axios = require('axios');
 
 module.exports = {
     name: 'crypto',
-    description: '📈 Fetches detailed info about any cryptocurrency.',
+    description: 'Fetches detailed info about any cryptocurrency.',
     /**
      * Executes the price command.
      * 
