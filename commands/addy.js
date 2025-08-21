@@ -1,6 +1,6 @@
 module.exports = {
     name: 'addy',
-    description: 'Sends your Litecoin (LTC) wallet address in a styled message with emojis.',
+    description: 'Sends your wallet address in a styled message with emojis.',
     /**
      * Executes the ltcaddress command.
      * 
@@ -21,4 +21,5 @@ module.exports = {
         message.channel.send(addressMessage);
     }
 };
+
 
