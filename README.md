@@ -96,6 +96,8 @@ This Node.js-based Discord selfbot offers a comprehensive suite of automation, a
 
 ## Contributing
 
+I favor discord as it's easier to communicate for me, but:
+
 Pull requests and suggestions are welcome! Please open an issue to discuss major changes.
 
 ## License
