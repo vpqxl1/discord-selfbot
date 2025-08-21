@@ -3,7 +3,7 @@ const fs = require("fs");
 const { execSync } = require("child_process");
 
 module.exports = {
-    name: "pcinfo",
+    name: "hwinfo",
     description: "Shows your PC specs and memory usage in enhanced neofetch style",
     async execute(channel, message, client, args) {
         try {
