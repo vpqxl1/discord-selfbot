@@ -51,7 +51,7 @@ This Node.js-based Discord selfbot offers a comprehensive suite of automation, a
 1. **Clone the repository**
     ```bash
     git clone https://github.com/vpqxl1/discord-selfbot.git
-    cd your-selfbot-repo
+    cd discord-selfbot
     ```
 
 2. **Install dependencies**
