@@ -111,29 +111,16 @@ node index.js
 
 * Selfbots are against Discord's Terms of Service.
 * This project is for **educational and personal use only**.
-* The author is **not responsible** for any bans, account losses, or misuse.
+* I am **not responsible** for any bans, account losses, or misuse.
 
 ---
 
 ## Contributing
 
-Pull requests and suggestions are welcome! Open an issue to discuss major changes. Discord is preferred for communication.
+Pull requests and suggestions are welcome! Open an issue to discuss major changes. Discord is preferred for communication (username is on my profile).
 
 ---
 
 ## License
 
 MIT License
-
----
-
-**Automate your Discord experience responsibly!**
-
-```
-
----
-
-If you want, I can make an **even sleeker version** where the commands are **categorized** into sections like “Fun”, “Crypto & Finance”, “Server Management”, “Utilities”, etc., so it’s easier to read and looks more professional.  
-
-Do you want me to do that?
-```
