@@ -8,7 +8,7 @@
 This Node.js-based Discord selfbot offers a comprehensive suite of automation, analytics, and utility commands:
 
 ```
-🔸 !addy → Sends your Litecoin (LTC) wallet address in a styled message with emojis.
+🔸 !addy → Sends your wallet address in a styled message with emojis.
 🔸 !analyze → Comprehensive analysis tool for DMs and servers with detailed statistics (use -h for help).
 🔸 !avatar → Displays the avatar of the mentioned user.
 🔸 !backup-channels → Export the guild channels (name, type, topic, position, parent) and roles & permissions to a JSON file.
