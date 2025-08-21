@@ -2,7 +2,7 @@ const axios = require('axios');
 
 module.exports = {
     name: 'bal',
-    description: '🔍 Checks the balance of a Litecoin (LTC) wallet address and its equivalent in USD and INR.',
+    description: 'Checks the balance of a Litecoin (LTC) wallet address and its equivalent in USD and INR.',
     /**
      * Executes the bal command.
      * 
@@ -53,3 +53,4 @@ module.exports = {
         }
     }
 };
+
