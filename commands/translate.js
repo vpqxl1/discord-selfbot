@@ -3,7 +3,7 @@ const { translate } = require('@vitalets/google-translate-api');
 
 module.exports = {
   name: 'translate',
-  description: '🌐 Translates a text from one language to another.',
+  description: 'Translates a text from one language to another.',
   /**
    * Executes the command.
    *
