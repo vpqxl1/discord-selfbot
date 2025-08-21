@@ -1,2 +1,102 @@
-# discord-selfbot
-A discord selfbot based on a selfbot by devrock07 (i deobfuscated index.js and the help)
+# Discord Selfbot
+
+> **⚠️ WARNING:**  
+> Selfbots are against [Discord's Terms of Service](https://discord.com/terms). Use at your own risk. This project is for educational purposes only.
+
+## Features
+
+This Node.js-based Discord selfbot offers a comprehensive suite of automation, analytics, and utility commands:
+
+```
+🔸 !addy → Sends your Litecoin (LTC) wallet address in a styled message with emojis.
+🔸 !analyze → Comprehensive analysis tool for DMs and servers with detailed statistics (use -h for help).
+🔸 !avatar → Displays the avatar of the mentioned user.
+🔸 !backup-channels → Export the guild channels (name, type, topic, position, parent) and roles & permissions to a JSON file.
+🔸 !bal → Checks the balance of a Litecoin (LTC) wallet address and its equivalent in USD and INR.
+🔸 !ban → Bans a user from the server.
+🔸 !clear → Delete messages off a channel.
+🔸 !coinflip → Flips a coin.
+🔸 !crypto → Fetches detailed info about any cryptocurrency.
+🔸 !dmuserinfo → Shows DM info with detailed statistics and analytics of each user.
+🔸 !dmuserinfo2 → Analyze DM history between users with detailed statistics.
+🔸 !exchange → Converts an amount from one currency to another.
+🔸 !gayrate → Rates how gay a user is.
+🔸 !gitsearch → Searches GitHub for repositories.
+🔸 !gituser → Retrieves information about a GitHub user.
+🔸 !guildicon → Displays the guild icon.
+🔸 !help → Shows a list of available commands.
+🔸 !sysinfo → Neofetch-style system info with pixel-art logos, bars and extended GPU/CPU details.
+🔸 !iplookup → Lookup information about an IP address.
+🔸 !kick → Kicks a user from the server.
+🔸 !loverate → Rates the compatibility of two mentioned users as lovers.
+🔸 !math → Evaluates a mathematical expression.
+🔸 !setnickname → Changes your own nickname.
+🔸 !ping → Checks the bot's latency.
+🔸 !qrcode → Generates a QR code for a given link.
+🔸 !restore-channels → Restore roles, channels and channel permission overwrites from a JSON backup created by backup-channels.
+🔸 !serverinfo → Shows server info or DM info with detailed statistics and analytics.
+🔸 !slotmachine → Play a simple slot machine.
+🔸 !spam → Spams a message multiple times.
+🔸 !status → Sets the bot's status.
+🔸 !status2 → Set a custom status with Rich Presence.
+🔸 !status3 → Change the status automatically with different images in a loop.
+🔸 !timezone → Provides the current time for a specified timezone.
+🔸 !translate → Translates a text from one language to another.
+🔸 !userinfo → Displays information about a user.
+🔸 !weather → Provides current weather information for a specified location.
+```
+
+## Installation
+
+1. **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/your-selfbot-repo.git
+    cd your-selfbot-repo
+    ```
+
+2. **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3. **Configure your Discord token**
+    - Create a `.env` file or edit the `config.json` file and add your Discord token:
+      ```
+      DISCORD_TOKEN=your_token_here
+      ```
+    - **Never share your token with anyone!**
+
+## Usage
+
+- Start the selfbot:
+    ```bash
+    node index.js
+    ```
+- Use commands in any Discord channel or DM (as yourself), for example:
+    ```
+    !help
+    ```
+
+## Requirements
+
+- Discord account (user account)
+- Node.js v16+ and npm
+- All required packages (see `package.json`)
+
+## Disclaimer
+
+- **Selfbots are against Discord's Terms of Service.**
+- This project is for educational and personal use only.
+- The author is not responsible for any bans, account losses, or misuse.
+
+## Contributing
+
+Pull requests and suggestions are welcome! Please open an issue to discuss major changes.
+
+## License
+
+MIT
+
+---
+
+**Automate your Discord experience responsibly!**
