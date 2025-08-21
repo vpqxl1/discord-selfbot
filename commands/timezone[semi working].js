@@ -3,7 +3,7 @@ const { DateTime } = require('luxon');
 
 module.exports = {
   name: 'timezone',
-  description: '🕒 Provides the current time for a specified timezone.',
+  description: '🕒 Provides the current time for a specified capital city.',
   /**
    * Executes the timezone command.
    * 
