@@ -45,7 +45,6 @@ This Node.js-based Discord selfbot provides a comprehensive suite of **automatio
 | `!ping` | Checks the bot's latency. |
 | `!qrcode` | Generates a QR code for a given link. |
 | `!quote` | Get inspirational quotes by category. |
-| `!randnum` | Undefined. |
 | `!restore-channels` | Restore roles, channels, and permissions from a JSON backup. |
 | `!roles` | Analyze role distribution and permissions usage. |
 | `!security` | Comprehensive server security assessment. |
