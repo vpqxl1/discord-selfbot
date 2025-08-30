@@ -1,12 +1,29 @@
 {
+  "name": "discord-selfbot",
+  "version": "1.0.0",
+  "description": "A selfbot for Discord with various utilities",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "validate": "./validate-config.js",
+    "dev": "nodemon index.js",
+    "fix-package": "./fix-package.sh"
+  },
   "dependencies": {
-    "@vitalets/google-translate-api": "^9.2.1",
-    "axios": "^1.11.0",
-    "cheerio": "^1.1.2",
-    "discord.js": "^14.21.0",
-    "discord.js-selfbot-v13": "^3.7.0",
-    "luxon": "^3.7.1",
-    "os": "^0.1.2",
-    "qrcode": "^1.5.4"
-  }
+    "discord.js-selfbot-v13": "^13.0.0",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0",
+    "luxon": "^3.3.0",
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "keywords": [
+    "discord",
+    "selfbot",
+    "utility"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
 }
