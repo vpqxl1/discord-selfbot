@@ -1,98 +1,101 @@
-
 ````markdown
 # Discord Selfbot
 
-![Node.js](https://img.shields.io/badge/Node.js-v16+-green)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![Node.js v16+](https://img.shields.io/badge/Node.js-v16%2B-green)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue)
 
-> ⚠️ **WARNING:**  
-> Selfbots are against [Discord's Terms of Service](https://discord.com/terms). Use at your own risk. This project is for **educational purposes only**.
+> **WARNING:** Selfbots are against [Discord’s Terms of Service](https://discord.com/terms). Use at your own risk. This project is for **educational purposes only**.
 
+---
 
+## Features & Commands
 
-Features
+### 🎛️ Utility
+- `!help` – Show available commands
+- `!avatar` – Get user avatar
+- `!userinfo` – Display user information
+- `!serverinfo` – Display server info
+- `!guildicon` – Show server icon
+- `!roles` – Analyze roles
+- `!setnickname` – Change your nickname
+- `!qrcode` – Generate a QR code
+- `!translate` – Translate text
+- `!timezone` – Show time in specific timezone
+- `!weather` – Show weather info
+- `!dictionary` – Word definitions
+- `!math` – Solve math expressions
+- `!encode` – Encode/decode text
+- `!exchange` – Currency conversion
+- `!crypto` – Cryptocurrency data
+- `!iplookup` – Lookup IP address
+- `!gitsearch` – Search GitHub repos
+- `!gituser` – Get GitHub user info
 
-This Node.js-based Discord selfbot provides a comprehensive suite of **automation, analytics, and utility commands**.
+### 🔒 Moderation
+- `!ban` – Ban a user
+- `!kick` – Kick a user
+- `!clear` – Bulk delete messages
+- `!spam` – Spam a message
+- `!backup-channels` – Backup channels/roles
+- `!restore-channels` – Restore channels/roles
+- `!log` – Log messages
+- `!security` – Security scan
 
-| Command | Description |
-|---------|-------------|
-| `!addy` | Sends your Litecoin (LTC) wallet address in a styled message with emojis. |
-| `!analyze` | Comprehensive analysis tool for DMs and servers with detailed statistics (`-h` for help). |
-| `!autoreact` | Automatically react to messages from specific users or with keywords. |
-| `!avatar` | Displays the avatar of the mentioned user. |
-| `!backup-channels` | Export guild channels and roles/permissions to a JSON file. |
-| `!bal` | Checks Litecoin (LTC) wallet balance and equivalent in USD/INR. |
-| `!ban` | Bans a user from the server. |
-| `!botstats` | Monitor and analyze bot performance metrics. |
-| `!clear` | Delete messages from a channel. |
-| `!coinflip` | Flips a coin. |
-| `!crypto` | Fetches detailed info about any cryptocurrency. |
-| `!dictionary` | Look up definitions using free dictionary APIs. |
-| `!encode` | Encode/decode text using various methods. |
-| `!exchange` | Converts an amount from one currency to another. |
-| `!funfact` | Displays a random fun fact from an API. |
-| `!gayrate` | Rates how gay a user is. |
-| `!gitsearch` | Searches GitHub for repositories. |
-| `!gituser` | Retrieves information about a GitHub user. |
-| `!guildicon` | Displays the guild icon. |
-| `!help` | Shows a list of available commands. |
-| `!hwinfo` | Neofetch-style system info with pixel-art logos and detailed GPU/CPU stats. |
-| `!iplookup` | Lookup information about an IP address. |
-| `!kick` | Kicks a user from the server. |
-| `!log` | Log messages from a channel to a file. |
-| `!loverate` | Rates the compatibility of two mentioned users. |
-| `!math` | Evaluates a mathematical expression. |
-| `!ping` | Checks the bot's latency. |
-| `!qrcode` | Generates a QR code for a given link. |
-| `!quote` | Get inspirational quotes by category. |
-| `!restore-channels` | Restore roles, channels, and permissions from a JSON backup. |
-| `!roles` | Analyze role distribution and permissions usage. |
-| `!security` | Comprehensive server security assessment. |
-| `!serverinfo` | Shows server or DM info with detailed stats. |
-| `!setnickname` | Changes your own nickname. |
-| `!slotmachine` | Play a simple slot machine. |
-| `!spam` | Spams a message multiple times. |
-| `!status` | Sets the bot's status. |
-| `!status2` | Set a custom status with Rich Presence. |
-| `!status3` | Loop through custom statuses with images. |
-| `!timezone` | Provides the current time for a specified timezone. |
-| `!translate` | Translates text between languages. |
-| `!userinfo` | Displays information about a user. |
-| `!weather` | Provides current weather information for a location. |
+### 📊 Analytics
+- `!analyze` – Analyze server/DM
+- `!botstats` – Show selfbot stats
+- `!hwinfo` – System info (Neofetch-style)
+- `!ping` – Check latency
+- `!bal` – Litecoin balance + fiat conversion
 
-````
+### 🎮 Fun
+- `!coinflip` – Flip a coin
+- `!slotmachine` – Slot machine game
+- `!funfact` – Random fun fact
+- `!quote` – Random quote
+- `!gayrate` – Fun percentage rating
+- `!loverate` – Compatibility rating
+- `!autoreact` – Auto react to messages
+
+### 🎨 Customization & Status
+- `!status` – Custom status
+- `!status2` – Rich presence status
+- `!status3` – Rotating images/status
+
+---
+
 ## Installation
 
-1. **Clone the repository**  
 ```bash
 git clone https://github.com/vpqxl1/discord-selfbot.git
 cd discord-selfbot
+npm install
 ````
 
-2. **Install dependencies**
+---
 
-```bash
-npm install
-```
+## Configuration
 
-3. **Configure the bot**
+* Edit `config.js`
+* Add:
 
-* Edit `config.js` and add your Discord token, userID, and prefix.
-* ⚠️ **Never share your token with anyone!**
+  * Your **Discord token**
+  * Your **user ID**
+  * Your **command prefix**
+
+⚠️ **Never share your token.**
 
 ---
 
 ## Usage
 
-* **Start the selfbot**:
-
 ```bash
 node index.js
 ```
 
-* **Use commands** in any Discord channel or DM (as yourself), for example:
+Use commands in Discord with your configured prefix:
 
-```
+```text
 !help
 ```
 
@@ -100,26 +103,28 @@ node index.js
 
 ## Requirements
 
-* Discord **user account**
-* Node.js v16+ and npm
-* All required packages (see `package.json`)
+* Node.js **v16+**
+* npm
+* A Discord account
 
 ---
 
 ## Disclaimer
 
-* Selfbots are against Discord's Terms of Service.
-* This project is for **educational and personal use only**.
-* I am **not responsible** for any bans, account losses, or misuse.
-
----
-
-## Contributing
-
-Pull requests and suggestions are welcome! Open an issue to discuss major changes. Discord is preferred for communication (username is on my profile).
+This project **violates Discord’s ToS** and may result in account termination. Use at your own risk. Educational purposes only.
 
 ---
 
 ## License
 
-MIT License
+MIT License – see [LICENSE](LICENSE).
+
+---
+
+## Credits
+
+* Original selfbot by **devrock07**
+* Deobfuscation & improvements by **vpqxl1**
+
+```
+```
