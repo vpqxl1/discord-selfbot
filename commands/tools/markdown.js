@@ -31,8 +31,8 @@ ${text}
 • *Italic:* \\*text\\* → *text*
 • __Underline:__ \\_\\_text\\_\\_ → __text__
 • ~~Strikethrough:~~ \\~\\~text\\~\\~ → ~~text~~
-• `Code:` \\`code\\` → \`code\`
-• ```Code Block:``` \\`\\`\\`code\\`\\`\\` → \`\`\`code\`\`\`
+• \`Code:\` \\\`code\\\` → \`code\`
+• \`\`\`Code Block:\`\`\` \\\\\`\\\`\\\`code\\\\\`\\\`\\\` → \`\`\`code\`\`\`
 • > Blockquote: \\> text → > text
         `.trim();
 
@@ -46,9 +46,9 @@ Use: v!markdown <text>
 
 **Examples:**
 • v!markdown **Hello** *World*
-• v!markdown \\`\\`\\`js
+• v!markdown \\\`\\\`\\\`js
 console.log("Hello")
-\\`\\`\\`
+\\\`\\\`\\\`
 • v!markdown > This is a quote
 
 **Escape characters with \\\\ if needed**
