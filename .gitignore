@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Configuration
+config.js
+
+# Logs and data
+commands/logs/*.json
+commands/logs/temp/*
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp

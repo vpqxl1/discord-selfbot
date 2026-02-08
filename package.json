@@ -1,13 +1,13 @@
 {
   "name": "discord-selfbot",
-  "version": "1.0.0",
-  "description": "A selfbot for Discord with various utilities",
+  "version": "2.0.0",
+  "description": "A cross-platform selfbot for Discord with AI auto-response and various utilities",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "validate": "./validate-config.js",
     "dev": "nodemon index.js",
-    "fix-package": "./fix-package.sh"
+    "setup": "node setup.js",
+    "test": "node index.js --test"
   },
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.1",
@@ -28,8 +28,20 @@
   "keywords": [
     "discord",
     "selfbot",
-    "utility"
+    "utility",
+    "ai",
+    "cross-platform",
+    "windows",
+    "linux"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "os": [
+    "win32",
+    "linux",
+    "darwin"
+  ]
 }
