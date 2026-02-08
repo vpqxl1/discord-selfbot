@@ -1,4 +1,4 @@
-const { prefix } = require("../../config");
+const CommandBase = require('../CommandBase');
 const fs = require("fs");
 const path = require("path");
 
@@ -24,41 +24,16 @@ function loadRules() {
   return [];
 }
 
+let autoReactRules = loadRules();
+
 // Save rules to file
 function saveRules() {
   try {
     const data = JSON.stringify(autoReactRules, null, 2);
     fs.writeFileSync(rulesFile, data, 'utf8');
-    console.log(`Autoreact rules saved to: ${rulesFile}`);
   } catch (error) {
     console.error('Error saving autoreact rules:', error);
   }
-}
-
-// Load existing rules
-let autoReactRules = loadRules();
-
-// Function to validate emoji
-function isValidEmoji(emoji) {
-  // Check for Unicode emoji (extended range for newer emojis)
-  const emojiRegex = /^(?:[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}])$/u;
-  if (emojiRegex.test(emoji)) return true;
-  
-  // Check for custom Discord emoji format
-  const customEmojiRegex = /^<a?:\w+:\d+>$/;
-  if (customEmojiRegex.test(emoji)) return true;
-  
-  // For complex emojis, just check if it's a single character or valid format
-  if (emoji.length === 1 || emoji.length === 2) {
-    // Try to validate as emoji by checking if it contains emoji characters
-    try {
-      return /\p{Emoji}/u.test(emoji);
-    } catch (e) {
-      return true; // If regex fails, assume it's valid
-    }
-  }
-  
-  return false;
 }
 
 // Function to check if message matches any rules
@@ -79,7 +54,7 @@ async function checkAutoReactRules(message, client) {
         try {
           await message.react(rule.emoji);
         } catch (error) {
-          console.error(`Failed to react with ${rule.emoji}:`, error.message);
+          // Silent fail for reactions (e.g. no permissions)
         }
       }
     } catch (error) {
@@ -88,133 +63,77 @@ async function checkAutoReactRules(message, client) {
   }
 }
 
-// Initialize the auto-react system
-function initAutoReact(client) {
-  // Remove existing listener if it exists
-  client.removeAllListeners('autoReactMessage');
-  
-  // Add message listener
-  client.on('messageCreate', (message) => {
-    checkAutoReactRules(message, client);
-  });
-}
-
 module.exports = {
   name: 'autoreact',
   description: 'Automatically react to messages from specific users or with keywords',
+  aliases: ['ar'],
+  usage: 'autoreact add <user/keyword> <target> <emoji> | list | remove <id> | clear',
+  cooldown: 2000,
   
-  // Initialize function called when command is loaded
   init(client) {
-    initAutoReact(client);
+    client.on('messageCreate', (message) => {
+      checkAutoReactRules(message, client);
+    });
   },
   
   async execute(channel, message, client, args) {
+    const base = new CommandBase();
+    
     if (args.length === 0) {
       const helpEmbed = {
         color: 0x5865F2,
-        title: '🔄 AutoReact Help Menu',
+        title: '🔄 AutoReact Management',
         description: 'Automatically react to messages from specific users or containing keywords',
         fields: [
           {
             name: '📝 Add Rules',
-            value: `\`${prefix}autoreact add user @user 🎉\`\nReact to all messages from a specific user\n\n\`${prefix}autoreact add keyword "hello" 👋\`\nReact to messages containing a keyword`,
+            value: `\`${base.prefix}autoreact add user @user 🎉\`\n\`${base.prefix}autoreact add keyword "hello" 👋\``,
             inline: false
           },
           {
             name: '📋 Manage Rules',
-            value: `\`${prefix}autoreact list\`\nShow all active rules\n\n\`${prefix}autoreact remove <id>\`\nRemove a rule by its ID\n\n\`${prefix}autoreact clear\`\nRemove all rules`,
-            inline: false
-          },
-          {
-            name: '💡 Examples',
-            value: `\`${prefix}autoreact add user @john 😂\`\n\`${prefix}autoreact add keyword "good morning" ☀️\`\n\`${prefix}autoreact remove 1234567890\``,
-            inline: false
-          },
-          {
-            name: 'ℹ️ Notes',
-            value: '• Keywords are case-insensitive\n• Use quotes around multi-word keywords\n• Supports Unicode and Discord custom emojis\n• Rules persist between restarts',
+            value: `\`${base.prefix}autoreact list\` - Show rules\n\`${base.prefix}autoreact remove <id>\` - Remove rule\n\`${base.prefix}autoreact clear\` - Remove all`,
             inline: false
           }
         ],
-        footer: {
-          text: `Total active rules: ${autoReactRules.length}`
-        },
-        timestamp: new Date().toISOString()
+        footer: { text: `Total active rules: ${autoReactRules.length}` }
       };
 
-      return channel.send({ embeds: [helpEmbed] });
+      return base.sendEmbed(channel, helpEmbed);
     }
 
     const subcommand = args[0].toLowerCase();
 
     if (subcommand === 'add') {
       if (args.length < 4) {
-        return channel.send('❌ Invalid format. Use: `autoreact add <user/keyword> <target> <emoji>`');
+        return base.sendError(channel, 'Invalid format. Use: `autoreact add <user/keyword> <target> <emoji>`');
       }
 
       const type = args[1].toLowerCase();
-      
       if (!['user', 'keyword'].includes(type)) {
-        return channel.send('❌ Type must be either `user` or `keyword`');
+        return base.sendError(channel, 'Type must be either `user` or `keyword`');
       }
 
-      let target;
-      let emoji;
+      let target, emoji;
 
       if (type === 'user') {
-        // Extract user ID from mention or use raw ID
         target = args[2].replace(/[<@!>]/g, '');
         emoji = args[3];
-        
-        // Validate user ID format (Discord IDs are 17-19 digits)
-        if (!/^\d{17,19}$/.test(target)) {
-          return channel.send('❌ Invalid user ID format. Use @mention or raw user ID.');
+        if (!/^\d{17,20}$/.test(target)) {
+          return base.sendError(channel, 'Invalid user ID format.');
         }
-        
-        // Validate user exists
-        try {
-          const user = await client.users.fetch(target);
-          if (!user) {
-            return channel.send('❌ User not found. Make sure the user ID is correct.');
-          }
-        } catch (error) {
-          console.error('User fetch error:', error);
-          return channel.send('❌ Could not find user. Make sure the user ID is correct and the user shares a server with the bot.');
-        }
-      } else if (type === 'keyword') {
-        // Join all args except the last one as the keyword, remove quotes
+      } else {
         target = args.slice(2, -1).join(' ').replace(/^["']|["']$/g, '');
         emoji = args[args.length - 1];
-        
-        if (!target) {
-          return channel.send('❌ Keyword cannot be empty.');
-        }
       }
 
-      // Validate emoji
-      if (!isValidEmoji(emoji)) {
-        // Try a more lenient check for complex emojis
-        try {
-          // Test if we can actually react with this emoji by attempting it
-          await message.react(emoji);
-          await message.reactions.cache.get(emoji)?.users.remove(client.user.id);
-        } catch (testError) {
-          console.error('Emoji validation failed:', testError);
-          return channel.send('❌ Invalid emoji. Make sure it\'s a valid Unicode emoji or Discord custom emoji that the bot can use.');
-        }
-      }
-
-      // Check for duplicate rules
-      const duplicate = autoReactRules.find(rule => 
-        rule.type === type && rule.target === target && rule.emoji === emoji
-      );
-      
-      if (duplicate) {
-        return channel.send('❌ This auto-react rule already exists.');
+      // Check for duplicate
+      if (autoReactRules.find(r => r.type === type && r.target === target && r.emoji === emoji)) {
+        return base.sendError(channel, 'This rule already exists.');
       }
 
       const newRule = {
-        id: Date.now().toString(),
+        id: Math.random().toString(36).substr(2, 9),
         type,
         target,
         emoji,
@@ -224,59 +143,32 @@ module.exports = {
       autoReactRules.push(newRule);
       saveRules();
 
-      const targetDisplay = type === 'user' ? `<@${target}>` : `"${target}"`;
-      console.log(`Added autoreact rule: ${JSON.stringify(newRule)}`);
-      channel.send(`✅ Added new auto-react rule (ID: ${newRule.id})\nWill react with ${emoji} to ${type} ${targetDisplay}`);
+      await base.sendSuccess(channel, `Added rule: React with ${emoji} to ${type} ${type === 'user' ? `<@${target}>` : `"${target}"`}`);
     } 
     else if (subcommand === 'list') {
       if (autoReactRules.length === 0) {
-        return channel.send('📝 No auto-react rules configured.');
+        return base.sendWarning(channel, 'No auto-react rules configured.');
       }
 
-      const rulesList = autoReactRules.map(rule => {
-        const targetDisplay = rule.type === 'user' 
-          ? `<@${rule.target}>` 
-          : `"${rule.target}"`;
-        return `**${rule.id}** - React with ${rule.emoji} to ${rule.type} ${targetDisplay}`;
-      }).join('\n');
-
-      channel.send(`**Auto-React Rules (${autoReactRules.length}):**\n${rulesList}`);
+      const list = autoReactRules.map(r => `\`${r.id}\`: ${r.emoji} on ${r.type} ${r.type === 'user' ? `<@${r.target}>` : `"${r.target}"`}`).join('\n');
+      await base.safeSend(channel, `**Auto-React Rules:**\n${list}`);
     }
     else if (subcommand === 'remove') {
-      if (args.length < 2) {
-        return channel.send('❌ Please provide a rule ID to remove. Use `autoreact list` to see all rules.');
-      }
-
-      const idToRemove = args[1];
-      const initialLength = autoReactRules.length;
-      autoReactRules = autoReactRules.filter(rule => rule.id !== idToRemove);
+      const id = args[1];
+      const initial = autoReactRules.length;
+      autoReactRules = autoReactRules.filter(r => r.id !== id);
       
-      if (autoReactRules.length === initialLength) {
-        return channel.send('❌ Rule not found with that ID. Use `autoreact list` to see all rules.');
+      if (autoReactRules.length === initial) {
+        return base.sendError(channel, 'Rule not found.');
       }
 
       saveRules();
-      channel.send('✅ Rule removed successfully.');
+      await base.sendSuccess(channel, 'Rule removed.');
     }
     else if (subcommand === 'clear') {
-      if (autoReactRules.length === 0) {
-        return channel.send('📝 No auto-react rules to clear.');
-      }
-
-      const count = autoReactRules.length;
       autoReactRules = [];
       saveRules();
-      
-      channel.send(`✅ Cleared all ${count} auto-react rules.`);
-    }
-    else {
-      channel.send('❌ Invalid subcommand. Use `add`, `list`, `remove`, or `clear`.');
+      await base.sendSuccess(channel, 'All rules cleared.');
     }
   }
 };
-
-// Export the rules and functions for external access
-module.exports.getAutoReactRules = () => autoReactRules;
-module.exports.saveRules = saveRules;
-module.exports.checkAutoReactRules = checkAutoReactRules;
-module.exports.rulesFilePath = rulesFile;

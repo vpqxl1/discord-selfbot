@@ -14,28 +14,25 @@ module.exports = {
         
         try {
             if (args.length > 0) {
+                const query = args[0].toLowerCase();
+                
                 // Check if it's a specific command
-                const command = client.commands.get(args[0].toLowerCase()) || 
+                const command = client.commands.get(query) || 
                                Array.from(client.commands.values()).find(cmd => 
-                                   cmd.aliases && cmd.aliases.includes(args[0].toLowerCase())
+                                   cmd.aliases && cmd.aliases.includes(query)
                                );
                 
                 if (command) {
-                    await this.showCommandHelp(channel, command, base);
-                    return;
+                    return this.showCommandHelp(channel, command, base);
                 }
                 
                 // Check if it's a category
                 const categories = this.getCommandCategories(client);
-                const categoryName = args[0].toLowerCase();
-                
-                if (categories[categoryName]) {
-                    await this.showCategoryCommands(channel, categoryName, categories[categoryName], base);
-                    return;
+                if (categories[query]) {
+                    return this.showCategoryCommands(channel, query, categories[query], base);
                 }
                 
-                await base.sendError(channel, `No command or category named "${args[0]}" found`);
-                return;
+                return base.sendError(channel, `No command or category named "${args[0]}" found`);
             }
             
             // Show main help with categories
@@ -48,144 +45,87 @@ module.exports = {
     },
     
     async showCommandHelp(channel, command, base) {
-        let helpText = `📚 **Command Help: ${base.prefix}${command.name}**\n\n`;
-        helpText += `*${command.description || 'No description available'}*\n\n`;
+        const helpEmbed = {
+            title: `📚 Command Help: ${base.prefix}${command.name}`,
+            description: `*${command.description || 'No description available'}*`,
+            color: 0x5865F2,
+            fields: [],
+            footer: { text: '[] = optional, <> = required' }
+        };
         
         if (command.usage) {
-            helpText += `**Usage:** ${base.prefix}${command.usage}\n`;
+            helpEmbed.fields.push({ name: '📝 Usage', value: `\`${base.prefix}${command.usage}\``, inline: true });
         }
         
         if (command.aliases && command.aliases.length > 0) {
-            helpText += `**Aliases:** ${command.aliases.map(a => base.prefix + a).join(', ')}\n`;
+            helpEmbed.fields.push({ name: '🏷️ Aliases', value: command.aliases.map(a => `\`${a}\``).join(', '), inline: true });
         }
         
         if (command.cooldown) {
-            helpText += `**Cooldown:** ${command.cooldown / 1000} seconds\n`;
+            helpEmbed.fields.push({ name: '⏳ Cooldown', value: `${command.cooldown / 1000}s`, inline: true });
         }
         
-        await base.safeSend(channel, helpText);
+        await base.sendEmbed(channel, helpEmbed);
     },
     
     async showCategoryList(channel, client, base) {
         const categories = this.getCommandCategories(client);
         
-        let categoryList = `🤖 **Selfbot Command Categories**\n\n`;
-        categoryList += `Use **${base.prefix}help <category>** to view commands in that category\n`;
-        categoryList += `Use **${base.prefix}help <command>** for detailed command help\n\n`;
+        const helpEmbed = {
+            title: '🤖 Selfbot Commands',
+            description: `Use \`${base.prefix}help <category>\` to view commands in that category.\nUse \`${base.prefix}help <command>\` for detailed help.`,
+            color: 0x5865F2,
+            fields: [],
+            footer: { text: `Total Commands: ${client.commands.size}` }
+        };
         
-        categoryList += `**Available Categories:**\n`;
-        
-        for (const [categoryName, commands] of Object.entries(categories)) {
-            categoryList += `• **${categoryName}** - ${commands.length} commands\n`;
+        for (const [name, cmds] of Object.entries(categories)) {
+            helpEmbed.fields.push({
+                name: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+                value: `\`${cmds.length}\` commands`,
+                inline: true
+            });
         }
         
-        categoryList += `\n**Total Commands:** ${client.commands.size}`;
-        
-        await base.safeSend(channel, categoryList);
+        await base.sendEmbed(channel, helpEmbed);
     },
     
     async showCategoryCommands(channel, categoryName, commands, base) {
-        // Sort commands alphabetically
-        const sortedCommands = commands.sort((a, b) => a.name.localeCompare(b.name));
+        const sorted = commands.sort((a, b) => a.name.localeCompare(b.name));
         
-        let commandList = `📖 **${categoryName.toUpperCase()} Commands**\n\n`;
-        commandList += `Use **${base.prefix}help <command>** for detailed help\n\n`;
+        const helpEmbed = {
+            title: `📖 ${categoryName.toUpperCase()} Commands`,
+            description: sorted.map(cmd => `• **${base.prefix}${cmd.name}** - ${cmd.description}`).join('\n'),
+            color: 0x5865F2,
+            footer: { text: `Total in ${categoryName}: ${commands.length}` }
+        };
         
-        for (const cmd of sortedCommands) {
-            const line = `• **${base.prefix}${cmd.name}**`;
-            const aliases = cmd.aliases.length > 0 ? ` (${cmd.aliases.join(', ')})` : '';
-            const description = ` - ${cmd.description || 'No description'}\n`;
-            
-            commandList += line + aliases + description;
-        }
-        
-        commandList += `\n**Total in ${categoryName}:** ${commands.length} commands`;
-        
-        await base.safeSend(channel, commandList);
+        await base.sendEmbed(channel, helpEmbed);
     },
     
     getCommandCategories(client) {
         const categories = {};
         const commandsDir = path.join(__dirname, '..');
         
-        try {
-            // Get all category folders
-            const categoryFolders = fs.readdirSync(commandsDir)
-                .filter(item => {
-                    try {
-                        return fs.statSync(path.join(commandsDir, item)).isDirectory();
-                    } catch {
-                        return false;
+        const folders = fs.readdirSync(commandsDir)
+            .filter(item => fs.statSync(path.join(commandsDir, item)).isDirectory());
+            
+        folders.forEach(folder => {
+            const folderPath = path.join(commandsDir, folder);
+            const files = fs.readdirSync(folderPath).filter(f => f.endsWith('.js'));
+            
+            files.forEach(file => {
+                try {
+                    const cmd = require(path.join(folderPath, file));
+                    if (cmd.name) {
+                        if (!categories[folder]) categories[folder] = [];
+                        categories[folder].push({
+                            name: cmd.name,
+                            description: cmd.description || 'No description'
+                        });
                     }
-                })
-                .filter(folder => !folder.startsWith('.'));
-            
-            // Initialize categories
-            for (const folder of categoryFolders) {
-                categories[folder] = [];
-            }
-            
-            // Add uncategorized category
-            categories['general'] = [];
-            
-            // Categorize commands
-            for (const [name, command] of client.commands) {
-                let foundCategory = false;
-                
-                // Check each category folder for this command
-                for (const category of categoryFolders) {
-                    const categoryPath = path.join(commandsDir, category);
-                    try {
-                        const commandFiles = fs.readdirSync(categoryPath)
-                            .filter(file => file.endsWith('.js') && file !== 'CommandBase.js');
-                        
-                        for (const file of commandFiles) {
-                            try {
-                                const cmdModule = require(path.join(categoryPath, file));
-                                if (cmdModule.name === name) {
-                                    categories[category].push({
-                                        name: command.name,
-                                        description: command.description || 'No description',
-                                        aliases: command.aliases || []
-                                    });
-                                    foundCategory = true;
-                                    break;
-                                }
-                            } catch (error) {
-                                continue;
-                            }
-                        }
-                        if (foundCategory) break;
-                    } catch (error) {
-                        continue;
-                    }
-                }
-                
-                // If no category found, put in general
-                if (!foundCategory) {
-                    categories['general'].push({
-                        name: command.name,
-                        description: command.description || 'No description',
-                        aliases: command.aliases || []
-                    });
-                }
-            }
-            
-        } catch (error) {
-            console.error('Error building command categories:', error);
-            // Fallback: put all commands in general category
-            categories['general'] = Array.from(client.commands.values()).map(cmd => ({
-                name: cmd.name,
-                description: cmd.description || 'No description',
-                aliases: cmd.aliases || []
-            }));
-        }
-        
-        // Remove empty categories
-        Object.keys(categories).forEach(category => {
-            if (categories[category].length === 0) {
-                delete categories[category];
-            }
+                } catch (e) {}
+            });
         });
         
         return categories;

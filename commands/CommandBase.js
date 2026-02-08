@@ -12,6 +12,15 @@ class CommandBase {
     
     async safeSend(channel, content, options = {}) {
         try {
+            // Split long content into multiple messages if it exceeds Discord's limit
+            if (typeof content === 'string' && content.length > 2000) {
+                const chunks = content.match(/[\s\S]{1,1900}/g) || [];
+                let lastMsg = null;
+                for (const chunk of chunks) {
+                    lastMsg = await channel.send(chunk);
+                }
+                return lastMsg;
+            }
             const sentMessage = await channel.send(content, options);
             return sentMessage;
         } catch (error) {
@@ -22,6 +31,9 @@ class CommandBase {
     
     async safeReply(message, content, options = {}) {
         try {
+            if (typeof content === 'string' && content.length > 2000) {
+                return this.safeSend(message.channel, content, options);
+            }
             return await message.reply(content, options);
         } catch (error) {
             console.error('Error replying to message:', error);
@@ -57,6 +69,25 @@ class CommandBase {
     
     async sendWarning(channel, message) {
         return this.safeSend(channel, `⚠️ ${message}`);
+    }
+
+    async sendEmbed(channel, embedData) {
+        try {
+            // Selfbots don't support rich embeds like bots do in some contexts,
+            // but discord.js-selfbot-v13 handles them. 
+            // We format them nicely as text for better compatibility if needed.
+            return await channel.send({ embeds: [embedData] });
+        } catch (error) {
+            console.error('Error sending embed:', error);
+            // Fallback to text format
+            let text = `**${embedData.title || ''}**\n${embedData.description || ''}\n`;
+            if (embedData.fields) {
+                embedData.fields.forEach(f => {
+                    text += `\n**${f.name}**\n${f.value}`;
+                });
+            }
+            return this.safeSend(channel, text);
+        }
     }
     
     parseArgs(args, schema = {}) {

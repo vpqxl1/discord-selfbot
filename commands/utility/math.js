@@ -1,32 +1,40 @@
+const CommandBase = require('../CommandBase');
+
 module.exports = {
     name: 'math',
-    description: 'Evaluates a mathematical expression.',
-    /**
-     * Executes the math command.
-     * 
-     * @param {Channel} channel The channel where the command was executed.
-     * @param {Message} message The message object for the command.
-     * @param {Client} client The client or bot instance.
-     * @param {String[]} args The arguments passed with the command.
-     */
-    execute(channel, message, client, args) {
-        // Delete the command message
-        //message.delete().catch(console.error);
+    description: 'Evaluate a mathematical expression',
+    aliases: ['calc', 'calculate'],
+    usage: 'math <expression>',
+    cooldown: 1000,
 
-        // Check if there is an expression to evaluate
-        if (args.length === 0) {
-            return message.channel.send('Please provide a mathematical expression to evaluate.').catch(console.error);
+    async execute(channel, message, client, args) {
+        const base = new CommandBase();
+        
+        if (!args.length) {
+            return base.sendWarning(channel, 'Please provide a mathematical expression to evaluate.');
         }
 
+        const expression = args.join(' ');
+        
         try {
-            // Evaluate the mathematical expression
-            const result = eval(args.join(' '));
+            // Basic math evaluation (safer than raw eval)
+            // Still using a Function constructor but with strict sanitization
+            const sanitized = expression.replace(/[^-+*/().0-9\s]/g, '');
+            
+            if (!sanitized) {
+                return base.sendError(channel, 'Invalid mathematical expression.');
+            }
 
-            // Send the result to the channel
-            message.channel.send(`Result: ${result}`).catch(console.error);
+            const result = new Function(`return (${sanitized})`)();
+            
+            if (result === undefined || result === null || isNaN(result)) {
+                throw new Error('Invalid result');
+            }
+
+            await base.safeSend(channel, `🔢 **Math Expression:** \`${expression}\`\n✅ **Result:** \`${result.toLocaleString()}\``);
         } catch (error) {
-            console.error('Error evaluating mathematical expression:', error);
-            message.channel.send('Error evaluating mathematical expression. Please check your input.').catch(console.error);
+            console.error('Math command error:', error);
+            await base.sendError(channel, 'Failed to evaluate expression. Please use numbers and basic operators (+, -, *, /, (, )).');
         }
     }
 };

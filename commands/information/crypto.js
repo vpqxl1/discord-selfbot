@@ -1,56 +1,78 @@
 const axios = require('axios');
+const CommandBase = require('../CommandBase');
 
 module.exports = {
     name: 'crypto',
-    description: 'Fetches detailed info about any cryptocurrency.',
-    /**
-     * Executes the price command.
-     * 
-     * @param {Channel} channel The channel where the command was executed.
-     * @param {Message} message The message object for the command.
-     * @param {Client} client The client or bot instance.
-     * @param {String[]} args The arguments passed with the command.
-     */
+    description: 'Get detailed information about a cryptocurrency',
+    aliases: ['coin', 'price'],
+    usage: 'crypto <coin_id>',
+    cooldown: 5000,
+
     async execute(channel, message, client, args) {
+        const base = new CommandBase();
+        
         if (!args.length) {
-            return message.channel.send('⚠️ Please provide a cryptocurrency (e.g. `!price bitcoin` or `!price eth`).');
+            return base.sendWarning(channel, 'Please provide a cryptocurrency ID (e.g., `bitcoin`, `ethereum`, `dogecoin`).');
         }
 
         const coin = args[0].toLowerCase();
-
+        
         try {
-            // Fetch crypto details from CoinGecko
+            // Using CoinGecko API
             const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${coin}`);
             const data = response.data;
-
+            
             if (!data || !data.market_data) {
-                return message.channel.send(`❌ Could not find data for **${coin}**. Please check the coin ID on CoinGecko.`);
+                return base.sendError(channel, `Could not find data for "${coin}". Please use full names like \`bitcoin\`.`);
             }
 
-            const name = data.name;
-            const symbol = data.symbol.toUpperCase();
-            const price = data.market_data.current_price.usd.toLocaleString();
-            const change24h = data.market_data.price_change_percentage_24h?.toFixed(2) || 0;
-            const marketCap = data.market_data.market_cap.usd.toLocaleString();
-            const volume = data.market_data.total_volume.usd.toLocaleString();
-            const high24h = data.market_data.high_24h.usd.toLocaleString();
-            const low24h = data.market_data.low_24h.usd.toLocaleString();
+            const marketData = data.market_data;
+            const change24h = marketData.price_change_percentage_24h || 0;
 
-            // Embed-like styled message
-            const infoMessage = 
-`📊 **${name} (${symbol})**
-💰 Price: **$${price}**
-📈 24h Change: **${change24h}%**
-🏦 Market Cap: **$${marketCap}**
-📊 24h Volume: **$${volume}**
-🔼 24h High: **$${high24h}**
-🔽 24h Low: **$${low24h}**`;
+            const cryptoEmbed = {
+                title: `🪙 ${data.name} (${data.symbol.toUpperCase()})`,
+                thumbnail: { url: data.image.small },
+                color: change24h >= 0 ? 0x2ECC71 : 0xE74C3C,
+                fields: [
+                    {
+                        name: '💰 Price',
+                        value: `**$${marketData.current_price.usd.toLocaleString()}**`,
+                        inline: true
+                    },
+                    {
+                        name: '📈 24h Change',
+                        value: `${change24h.toFixed(2)}%`,
+                        inline: true
+                    },
+                    {
+                        name: '🏦 Market Cap',
+                        value: `$${marketData.market_cap.usd.toLocaleString()}`,
+                        inline: true
+                    },
+                    {
+                        name: '📊 24h High/Low',
+                        value: `High: $${marketData.high_24h.usd.toLocaleString()}\nLow: $${marketData.low_24h.usd.toLocaleString()}`,
+                        inline: false
+                    }
+                ],
+                footer: { text: 'Data provided by CoinGecko' },
+                timestamp: new Date()
+            };
 
-            message.channel.send(infoMessage);
+            await base.sendEmbed(channel, cryptoEmbed);
         } catch (error) {
-            console.error('Error fetching crypto data:', error.response?.data || error.message);
-            message.channel.send('❌ Error fetching crypto info. Please try again later.');
+            console.error('Crypto command error:', error);
+            // Fallback for symbols if full name fails
+            try {
+                const fallbackRes = await axios.get(`https://min-api.cryptocompare.com/data/price?fsym=${coin.toUpperCase()}&tsyms=USD`);
+                if (fallbackRes.data.USD) {
+                    await base.safeSend(channel, `🪙 **${coin.toUpperCase()}**: $${fallbackRes.data.USD.toLocaleString()}`);
+                } else {
+                    await base.sendError(channel, 'Could not fetch data. Try using the full coin name (e.g., `bitcoin`).');
+                }
+            } catch (err) {
+                await base.sendError(channel, 'Failed to fetch cryptocurrency data.');
+            }
         }
     }
 };
-
