@@ -2,6 +2,7 @@ module.exports = {
     name: 'addy',
     description: 'Sends your Litecoin (LTC) wallet address in a styled message with emojis.',
     /**
+
      * Executes the ltcaddress command.
      * 
      * @param {Channel} channel The channel where the command was executed.
@@ -11,7 +12,8 @@ module.exports = {
      */
     execute(channel, message, client, args) {
         // Replace 'YOUR_LTC_ADDRESS' with your actual Litecoin wallet address
-        const ltcAddress = 'LdxkCB2f5SNyXAN3dZ82a2yyUbeMwQ5ZBY';
+        const config = require('../../config');
+        const ltcAddress = config.ltcAdress
 
         // Styled message with emojis
         const addressMessage = `🔒 **Pay Here (LTC) Wallet Address:**\n\n` +
@@ -21,3 +23,4 @@ module.exports = {
         message.channel.send(addressMessage);
     }
 };
+
