@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const { MessageAttachment } = require("discord.js-selfbot-v13");
-const { token, prefix, allowedUserIDs, nasaApiKey } = require("./config");
+const { token, prefix, allowedUserIDs, nasaApiKey, silentPermissionDenied } = require("./config");
 
 const client = new Client({
     checkUpdate: false,
@@ -84,7 +84,10 @@ client.on("messageCreate", async (message) => {
 
     // Check permissions
     if (!allowedUserIDs.includes(message.author.id)) {
-        return safeSend(message.channel, "❌ You don't have permission to use this command.");
+        if (!silentPermissionDenied) {
+            return safeSend(message.channel, "❌ You don't have permission to use this command.");
+        }
+        return;
     }
 
     // Resolve aliases
